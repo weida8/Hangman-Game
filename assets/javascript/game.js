@@ -1,13 +1,22 @@
 var wordBank = ["hello world", "game of thrones", "usa", "happy"];
-var currentword = wordBank[Math.floor((Math.random() * wordBank.length))];
-var wordLength = currentword.length;
+var currentword = "";
+var wordLength = 0;
 var userStatus = false;
 var display = "";
 var life = 10;
 var progress = 0;
 
+
 document.onkeyup = function(event) {
-  if (userStatus === false) {
+  console.log("currentword: "+currentword);
+  console.log("wordLength: "+wordLength);
+  console.log("userStatus: "+userStatus);
+  console.log("life: "+life);
+  console.log("progress: "+progress);
+  if(userStatus === "done"){
+    return;
+  }else if (userStatus === false) {
+    document.querySelector("#result").innerHTML = "<p></p>";
     setUp();
   }else {
     play(event.key);
@@ -15,6 +24,8 @@ document.onkeyup = function(event) {
 }
 
 function setUp() {
+  currentword = wordBank[Math.floor((Math.random() * wordBank.length))];
+  wordLength = currentword.length;
   for(var i = 0; i<wordLength; i++) {
       if (currentword.charAt(i) === " ") {
         display += "&nbsp";
@@ -24,14 +35,23 @@ function setUp() {
   }
   userStatus = true;
   var textToDisplay = "<p>"+display+"</p>";
-  document.querySelector("#screen").innerHTML = textToDisplay ;
+  document.querySelector("#screen").innerHTML = textToDisplay;
 }
 
 function wordUpdate(location) {
   progress += 1;
   display = display.substring(0, location)+currentword[location]+display.substring(location+1, wordLength+1);
+  console.log("wordUpdate display: "+display);
   var textToDisplay = "<p>"+display+"</p>";
   document.querySelector("#screen").innerHTML = textToDisplay;
+  var worldPlaceHolder = currentword.replace(event.key, "~");
+  currentword = worldPlaceHolder;
+  if(progress === wordLength) {
+    document.querySelector("#result").innerHTML = "<p>You Won! =) Hit any key to play again!</p>";
+    progress = 0;
+    userStatus = false;
+    display = "";
+  }
 }
 
 function play(input) {
@@ -40,12 +60,8 @@ function play(input) {
     life -= 1;
   } else if(location === -1 && life === 0){
     document.querySelector("#result").innerHTML = "<p>You ran out of lives! =(</p>";
-  } else if(progress === wordLength) {
-    document.querySelector("#result").innerHTML = "<p>You Won! =) Hit any key to play again!</p>";
-    userStatus = false;
-
-  }
-    else {
+    userStatus = "done";
+  } else {
     wordUpdate(location);
   }
 }
