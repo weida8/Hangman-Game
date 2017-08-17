@@ -1,5 +1,6 @@
 var wordBank = ["hello world", "game of thrones", "usa", "happy"];
 var currentword = "";
+var currentwordData = "";
 var wordLength = 0;
 var userStatus = false;
 var display = "";
@@ -24,15 +25,22 @@ document.onkeyup = function(event) {
 }
 
 function setUp() {
+    var lengthDeduction = 0;
+  currentwordData = "";
+  display = "";
   currentword = wordBank[Math.floor((Math.random() * wordBank.length))];
   wordLength = currentword.length;
   for(var i = 0; i<wordLength; i++) {
       if (currentword.charAt(i) === " ") {
         display += "&nbsp";
+        currentwordData +=" ";
+        lengthDeduction += 1;
       } else {
         display += "_ ";
+        currentwordData +="_";
       }
   }
+  wordLength -= lengthDeduction;
   userStatus = true;
   var textToDisplay = "<p>"+display+"</p>";
   document.querySelector("#screen").innerHTML = textToDisplay;
@@ -40,8 +48,10 @@ function setUp() {
 
 function wordUpdate(location) {
   progress += 1;
-  display = display.substring(0, location)+currentword[location]+display.substring(location+1, wordLength+1);
-  console.log("wordUpdate display: "+display);
+  console.log("wordUpdate progress: "+progress);
+  currentwordData = currentwordData.substring(0, location)+currentword[location]+currentwordData.substring(location+1, currentwordData.length);
+  display = "";
+  display = dataToDisplay(currentwordData);
   var textToDisplay = "<p>"+display+"</p>";
   document.querySelector("#screen").innerHTML = textToDisplay;
   var worldPlaceHolder = currentword.replace(event.key, "~");
@@ -52,6 +62,19 @@ function wordUpdate(location) {
     userStatus = false;
     display = "";
   }
+}
+
+function dataToDisplay(word) {
+  for(var i = 0; i<word.length; i++) {
+      if (word.charAt(i) === " ") {
+        display += "&nbsp";
+      } else if (word.charAt(i) != "_"){
+        display += word.charAt(i)+" ";
+      } else {
+        display += "_ ";
+      }
+  }
+  return(display);
 }
 
 function play(input) {
