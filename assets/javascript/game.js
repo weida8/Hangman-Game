@@ -85,6 +85,9 @@ function play(input) {
     document.querySelector("#result").innerHTML = "<p>You ran out of lives! =(</p>";
     userStatus = "done";
   } else {
-    wordUpdate(location);
+    while(location != -1){
+      wordUpdate(location);
+      location = currentword.search(input);
+    }
   }
 }
